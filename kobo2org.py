@@ -12,6 +12,9 @@ from kython.org import as_org_entry, append_org_entry
 def get_logger():
     return logging.getLogger('kobo2org')
 
+def description(d: Item):
+    return f"{d.dt_created}: {d.summary} {d.text}"
+
 # TODO ugh. krill is the same tool, really. just different rules for handling?
 class Kobo2Org:
     def __init__(self):
@@ -25,6 +28,7 @@ class Kobo2Org:
         return d.bid in self.state.get()
 
     def add_to_org(self, d: Item):
+        print("Adding new item: " + description(d))
         append_org_entry(
             self.org_file,
             body=d.text,
@@ -34,7 +38,7 @@ class Kobo2Org:
 
     def mark_done(self, d: Item):
         st = self.state.get()
-        st[d.bid] = "TODO???"
+        st[d.bid] = description(d)
         self.state.update(st)
 
     def run(self):
