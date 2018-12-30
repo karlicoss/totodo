@@ -2,7 +2,7 @@
 import logging
 from pathlib import Path
 
-from my.books.kobo import by_annotation, Item
+from my.books.kobo import by_annotation, Highlight
 
 from kython.state import JsonState
 from kython.logging import setup_logzero
@@ -12,8 +12,8 @@ from kython.org import as_org_entry, append_org_entry
 def get_logger():
     return logging.getLogger('kobo2org')
 
-def description(d: Item):
-    return f"{d.dt_created}: {d.summary} {d.text}"
+def description(d: Highlight):
+    return f"{d.dt}: {d.summary} {d.text} {d.annotation}"
 
 # TODO ugh. krill is the same tool, really. just different rules for handling?
 class Kobo2Org:
@@ -24,25 +24,31 @@ class Kobo2Org:
         self.logger = get_logger()
         self.org_file = Path('/L/Dropbox/mobile/notes/kobo2org.org')
 
-    def handled(self, d: Item) -> bool:
-        return d.bid in self.state.get()
+    def handled(self, d: Highlight) -> bool:
+        return d.eid in self.state.get()
 
-    def add_to_org(self, d: Item):
+    def add_to_org(self, d: Highlight):
         print("Adding new item: " + description(d))
         append_org_entry(
             self.org_file,
-            body=d.text,
-            created=d.dt_created,
+            heading=d.annotation,
+            body=f'{d.text}\nfrom {d.book}',
+            created=d.dt,
             tags=['kobo2org'],
         )
 
-    def mark_done(self, d: Item):
+    def mark_done(self, d: Highlight):
         st = self.state.get()
-        st[d.bid] = description(d)
+        st[d.eid] = description(d)
         self.state.update(st)
 
     def run(self):
-        for d in by_annotation('todo'):
+        def with_todo(ann) -> bool:
+            if ann is None:
+                ann = ''
+            return 'todo' in ann.lower().split()
+            
+        for d in by_annotation(with_todo):
             if self.handled(d):
                 self.logger.debug('already handled: %s', d)
             else:
