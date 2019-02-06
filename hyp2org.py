@@ -3,7 +3,7 @@ from kython.org_tools import as_org_entry
 from my.hypothesis import get_todos
 
 from add2org import add2org
-
+from config import STATES, NOTES
 
 def main():
     todos = get_todos()
@@ -22,11 +22,10 @@ def main():
         ) for t in todos
     ]
 
-
     add2org(
         items=items,
-        output='/tmp/hyp2org.org',
-        state='/tmp/hyp2org.json',
+        output=NOTES.join('hyp2org.org'),
+        state=STATES.join('hyp2org.json'),
         logger='hyp2org',
     )
 
