@@ -37,6 +37,7 @@ def add2org(
             logger.debug('already handled: %s %s', k, i)
         else:
             logger.info('adding: %s %s', k, i)
+            print(f'adding new item {k} {i}') # print since it's easier to track changes via kron emailing. maybe It's not the best way, dunno..
             atomic_append(
                 output,
                 i,
