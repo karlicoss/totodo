@@ -24,8 +24,8 @@ def main():
 
     add2org(
         items=items,
-        output=NOTES.join('hyp2org.org'),
-        state=STATES.join('hyp2org.json'),
+        output=NOTES.joinpath('hyp2org.org'),
+        state=STATES.joinpath('hyp2org.json'),
         logger='hyp2org',
     )
 

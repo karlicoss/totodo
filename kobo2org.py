@@ -24,8 +24,8 @@ def main():
 
     add2org(
         items=items,
-        output=NOTES.join('kobo2org.org'),
-        state=STATES.join('kobo2org.state'),
+        output=NOTES.joinpath('kobo2org.org'),
+        state=STATES.joinpath('kobo2org.state'),
         logger='kobo2org',
     )
 
